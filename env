@@ -1,0 +1,6 @@
+module.exports = {
+    env:{
+      PATH_URL : "https://api-dot-project424.appspot.com"
+      // PATH_URL : "http://localhost:8080"
+    }
+  };
