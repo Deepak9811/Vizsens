@@ -20,6 +20,8 @@ import StaffIN from './components/StaffIn';
 import StaffOut from './components/StaffOut';
 import Courier from './components/Courier';
 import ListInside from './components/ListInside';
+import EmployeeIn from './components/EmployeeIn';
+import AddStaff from './components/AddStaff';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,11 +46,15 @@ export default class App extends Component {
             headerShown: false,
           }}>
           <>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Bluetooth" component={Bluetooth} />
+            {/* <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Bluetooth" component={Bluetooth} /> */}
             <Stack.Screen name="Home" component={Home} />
 
             <Stack.Screen name="Courier" component={Courier} />
+
+            <Stack.Screen name="EmployeeIn" component={EmployeeIn} />
+            <Stack.Screen name="AddStaff" component={AddStaff} />
+
 
             <Stack.Screen name="Visitor" component={Visitor} />
             <Stack.Screen

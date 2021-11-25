@@ -4,8 +4,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Linking,
   Image,
+  ScrollView,
   ToastAndroid,
   BackHandler,
   Alert,
@@ -140,7 +140,7 @@ export default class Home extends Component {
           </View>
 
           <TouchableOpacity 
-          // onPress={()=>this.props.navigation.navigate('ListInside')} 
+          onPress={()=>this.props.navigation.navigate('ListInside')} 
           >
             <Appbar.Content
               title={
@@ -169,7 +169,7 @@ export default class Home extends Component {
           />
         </Appbar.Header>
 
-        <View>
+        <ScrollView>
           <View style={styles.cardShadow}>
             <View style={styles.cdm}>
               <View style={{marginBottom: '5%'}}>
@@ -234,6 +234,45 @@ export default class Home extends Component {
                     </View>
                   </TouchableOpacity>
                 </View>
+              </View>
+
+
+              {/* ---------------------EMPLOYEE------------------------------------------ */}
+              <View style={styles.cr}>
+                <View style={[styles.inp,{marginBottom:1}]}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => this.props.navigation.navigate('EmployeeIn')}>
+                    <View style={[styles.signIn]}>
+                      <View style={{flexDirection: 'row'}}>
+                        <Image
+                          source={require('./image/employee1.png')}
+                          style={{marginRight: '3%', width: 26, height: 26}}
+                        />
+                        <Text style={styles.textSign}>
+                          employee
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
+                {/* <View style={[styles.inp, {marginBottom: 0}]}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => this.props.navigation.navigate('EmployeeOut')}>
+                    <View style={[styles.signIn]}>
+                      <View style={{flexDirection: 'row'}}>
+                      <Image
+                          source={require('./image/employee1.png')}
+                          style={{marginRight: '3%', width: 26, height: 26}}
+                        />
+                        <Text style={styles.textSign}>Employee - OUT</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </View> */}
+                
               </View>
 
               {/* ---------------STAFF----------------------------------- */}
@@ -354,12 +393,9 @@ export default class Home extends Component {
 
           <View
             style={{
-              position: 'absolute',
-              bottom: 0,
+              marginBottom: '5%',
               marginLeft: '5%',
               alignItems: 'center',
-              left: 0,
-              right: 0,
             }}>
             <View style={styles.link}>
               <Image
@@ -369,17 +405,8 @@ export default class Home extends Component {
             </View>
           </View>
 
-          {/* <View style={{position: 'absolute', bottom: 0}}>
-          <View style={styles.link}>
-            <TouchableOpacity
-              onPress={() => Linking.openURL('https://celect.in/')}
-              style={styles.linkS}>
-              <Text>Powered by</Text>
-              <Text style={{color: '#f68823'}}> CELECT</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
-        </View>
+          
+        </ScrollView>
       </View>
     );
   }
@@ -424,7 +451,7 @@ const styles = StyleSheet.create({
   inp: {
     marginBottom: '5%',
     borderBottomWidth: 1,
-    borderBottomColor: '#E3E3E3',
+    borderBottomColor: '#F1F1F1',
   },
   button: {
     // alignItems: 'center',

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   StyleSheet,
@@ -6,21 +6,20 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  FlatList,
   Alert,
   ActivityIndicator,
-  Button,
   Image,
   ToastAndroid,
 } from 'react-native';
 import IconAntDesign from 'react-native-vector-icons/MaterialIcons';
-import {Appbar, Card} from 'react-native-paper';
+import { Appbar, Card } from 'react-native-paper';
 
-// import * as Animatable from 'react-native-animatable';
-import {Picker as SelectPicker} from '@react-native-picker/picker';
+import * as Animatable from 'react-native-animatable';
+import { Picker as SelectPicker } from '@react-native-picker/picker';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 
 import {
@@ -114,7 +113,7 @@ export default class Staff extends Component {
       .catch(error => {
         console.log(
           'There has been a problem with your fetch operation: ' +
-            error.message,
+          error.message,
         );
       });
   }
@@ -128,14 +127,14 @@ export default class Staff extends Component {
     });
 
     if (!this.state.searchMeeting.length == 0) {
-      this.setState({listArray: [], showSearchContent: true,searchLoader: true,});
-      console.log('seachmeeting length :-',this.state.searchMeeting.length)
-    }else{
+      this.setState({ listArray: [], showSearchContent: true, searchLoader: true, });
+      console.log('seachmeeting length :-', this.state.searchMeeting.length)
+    } else {
       console.log('seachmeeting =============',)
-      this.setState({listArray: [], showSearchContent: false,searchLoader: false,});
+      this.setState({ listArray: [], showSearchContent: false, searchLoader: false, });
     }
 
-    
+
 
     // let sParameter = value;
     // sParameter = encodeURIComponent(sParameter.trim());
@@ -157,18 +156,20 @@ export default class Staff extends Component {
             // console.log('search =>', resp);
             this.setState({
               listArray: resp.data,
-              // showSearchContent: true,
+              showSearchContent: true,
               searchLoader: false,
             });
           } else {
+            this.setState({
+              showSearchContent: false,
+              searchLoader: false,
+            });
             ToastAndroid.showWithGravity(
               resp.message,
               ToastAndroid.SHORT,
               ToastAndroid.CENTER,
             );
-            this.setState({
-              searchLoader: false,
-            });
+
           }
         });
       })
@@ -180,7 +181,7 @@ export default class Staff extends Component {
         );
         console.log(
           'There has been a problem with your fetch operation: ' +
-            error.message,
+          error.message,
         );
         this.setState({
           searchLoader: false,
@@ -197,7 +198,7 @@ export default class Staff extends Component {
       this.addVisitorReason();
     } else {
       Alert.alert('Wrong Input', 'Please fill all the fields.', [
-        {text: 'Okay'},
+        { text: 'Okay' },
       ]);
     }
   }
@@ -336,7 +337,7 @@ export default class Staff extends Component {
       base64: true,
     })
       .then(response => {
-        const {uri, width, height, base64} = response;
+        const { uri, width, height, base64 } = response;
         this.setState({
           base64Image: base64,
         });
@@ -347,10 +348,10 @@ export default class Staff extends Component {
 
   render() {
     return (
-      <View animation="fadeInRight" style={styles.container}>
+      <Animatable.View animation="fadeInRight" style={styles.container} duration={400}>
         <Appbar.Header style={styles.ttl}>
           <TouchableOpacity
-            style={{paddingLeft: '2%'}}
+            style={{ paddingLeft: '2%' }}
             onPress={() => this.props.navigation.goBack()}>
             <AntDesign name="arrowleft" color="#05375a" size={25} />
           </TouchableOpacity>
@@ -384,270 +385,136 @@ export default class Staff extends Component {
 
         {/* <ScrollView> */}
         <View style={styles.cr}>
-          {!this.state.hideFetch ? (
-            <>
-              <View style={styles.mgt}>
-                <View style={styles.cdm}>
-                  <View>
-                    <View style={{marginBottom: '3%'}}>
-                      <Text style={{color: '#959595'}}>
-                      Select the option below to preceed further...
-                      </Text>
-                    </View>
-                  </View>
 
-                  <Text style={styles.cl}>Vendor</Text>
-
-                  <View style={styles.pkr}>
-                    <SelectPicker
-                      style={{width: '100%'}}
-                      // mode="dropdown"
-                      selectedValue={this.state.purposeValue}
-                      onValueChange={(value, index, label) => {
-                        this.onPickerValueChange(value, index, label),
-                          this.setState({
-                            purposeIndexValue: value,
-                          });
-                      }}>
-                      {this.state.purposeData.map((item, i) => (
-                        <SelectPicker.item
-                          label={item.vendroName}
-                          color="#6f6f6f"
-                          value={item.vendorId}
-                        />
-                      ))}
-                    </SelectPicker>
-                  </View>
+          <View style={styles.mgt}>
+            <View style={styles.cdm}>
+              <View style={{ flexDirection: "row", marginBottom: '3%' }}>
+                <View style={{}}>
+                  <Text style={{ color: '#959595' }}>
+                    Select the option below to proceed further...
+                  </Text>
                 </View>
-
-                <View style={styles.cdm}>
-                  <Text style={styles.cl}>Staff Name </Text>
-                  <View style={styles.searchSt}>
-                    <TextInput
-                      placeholder="search"
-                      placeholderTextColor="#696969"
-                      style={styles.searchInputStyle}
-                      value={
-                        // this.state.showSearchContent
-                        // ?
-                        this.state.searchMeeting
-                        // :
-                        // this.state.mName
-                      }
-                      onChangeText={value => {
-                        this.setState({searchMeeting: value});
-                        this.searchVisitor(value);
-                      }}
-                      // onBlur={e => {
-                      //   setTimeout(() => {
-                      //     this.setState({showSearchContent: false});
-                      //   });
-                      // }}
-                      // mode="outlined"
-                    />
-                    <IconAntDesign
-                      style={styles.iconStyle}
-                      name="search"
-                      size={25}
-                      color="#696969"
-                    />
-                  </View>
-                  {!this.state.searchLoader ? (
-                    <>
-                      {this.state.showSearchContent ? (
-                        <View
-                          style={{
-                            marginTop: '10%',
-                            width: '100%',
-                          }}>
-                          <View style={styles.flatstyles}>
-                            <ScrollView showsVerticalScrollIndicator={false}>
-                              <View
-                                style={{
-                                  marginTop: '5%',
-                                  marginBottom: '5%',
-                                  width: '100%',
-                                }}>
-                                {this.state.listArray.map((item, i) => {
-                                  {
-                                    /* console.log('item =>', item); */
-                                  }
-                                  return (
-                                    <React.Fragment key={i}>
-                                      <View style={{elevation: 1}}>
-                                        <TouchableOpacity
-                                          style={styles.searchTextSyle}
-                                          value={this.state.mName}
-                                          onPress={() =>
-                                            this.getTextValue(item)
-                                          }>
-                                          <Text style={[styles.searchText]}>
-                                            {item.name}
-                                          </Text>
-                                        </TouchableOpacity>
-                                      </View>
-                                    </React.Fragment>
-                                  );
-                                })}
-                              </View>
-                            </ScrollView>
-                          </View>
-                        </View>
-                      ) : null}
-                    </>
-                  ) : (
-                    <>
-                      <View
-                        style={{
-                          flex: 1,
-                          width: '100%',
-                          position: 'absolute',
-                          elevation: 3,
-                          top: '50%',
-                          justifyContent: 'center',
-                        }}>
-                        <ActivityIndicator size="large" color="#0d6efd" />
-                      </View>
-                    </>
-                  )}
-                </View>
-              </View>
-            </>
-          ) : (
-            <>
-              <View style={[styles.cdm, {marginTop: '5%'}]}>
-                <Text style={styles.fnts}>
-                  Name {'     '}: {this.state.staffName}
-                </Text>
-                <Text style={styles.fnts}>
-                  Mobile {'      '}: {this.state.staffMobile}
-                </Text>
-                <Text style={styles.fnts}>
-                  Empoyee ID : {this.state.staffEmpoyeeID}
-                </Text>
-                <Text style={styles.fnts}>
-                  Valid Till {'      '}: {this.state.staffValidTill}
-                </Text>
+                <TouchableOpacity onPress={() => this.props.navigation.push("AddStaff")}>
+                  <Text><Feather name="user-plus" size={25} /></Text></TouchableOpacity>
               </View>
 
-              <Image
-                source={{
-                  uri: 'data:image/png;base64,' + this.state.base64Image,
-                }}
-                style={styles.image}
-              />
+              <Text style={styles.cl}>Vendor</Text>
 
-              <View style={{padding: 10, marginBottom: '5%', marginTop: '10%'}}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={async () => {
-                    try {
-                      await BluetoothEscposPrinter.printerInit();
-                      await BluetoothEscposPrinter.printerLeftSpace(0);
+              <View style={styles.pkr}>
+                <SelectPicker
+                  style={{ width: '100%' }}
+                  // mode="dropdown"
+                  selectedValue={this.state.purposeValue}
+                  onValueChange={(value, index, label) => {
+                    this.onPickerValueChange(value, index, label),
+                      this.setState({
+                        purposeIndexValue: value,
+                      });
+                  }}>
+                  {this.state.purposeData.map((item, i) => (
+                    <SelectPicker.item
+                      label={item.vendroName}
+                      color="#6f6f6f"
+                      value={item.vendorId}
+                    />
+                  ))}
+                </SelectPicker>
+              </View>
+            </View>
 
-                      await BluetoothEscposPrinter.printerAlign(
-                        BluetoothEscposPrinter.ALIGN.CENTER,
-                      );
-                      await BluetoothEscposPrinter.setBlob(0);
-                      await BluetoothEscposPrinter.printText(
-                        'Ashoka University - Day Visitor\r\n',
-                        {
-                          encoding: 'GBK',
-                          codepage: 0,
-                          widthtimes: 3,
-                          heigthtimes: 3,
-                          fonttype: 1,
-                        },
-                      );
-                      await BluetoothEscposPrinter.printText('\r\n', {});
-                      await BluetoothEscposPrinter.printerAlign(
-                        BluetoothEscposPrinter.ALIGN.LEFT,
-                      );
-
-                      let columnWidths = [14, 30];
-
-                      await BluetoothEscposPrinter.printColumn(
-                        columnWidths,
-                        [
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                        ],
-                        ['Name       :', this.state.staffName],
-                        {},
-                      );
-
-                      await BluetoothEscposPrinter.printColumn(
-                        columnWidths,
-                        [
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                        ],
-                        ['Valid Till :', this.state.staffValidTill],
-                        {},
-                      );
-
-                      await BluetoothEscposPrinter.printColumn(
-                        columnWidths,
-                        [
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                        ],
-                        ['Mobile     :', this.state.staffMobile],
-                        {},
-                      );
-
-                      await BluetoothEscposPrinter.printColumn(
-                        columnWidths,
-                        [
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                          BluetoothEscposPrinter.ALIGN.LEFT,
-                        ],
-                        ['Empoyee ID :', this.state.staffEmpoyeeID],
-                        {},
-                      );
-
-                      // await BluetoothEscposPrinter.printText(
-                      //   '-------------------------------------------\r\n',
-                      //   {},
-                      // );
-
-                      await BluetoothEscposPrinter.printPic(
-                        this.state.base64Image,
-                        {
-                          width: 100,
-                          left: 100,
-                        },
-                      );
-
-                      this.props.navigation.navigate('Home');
-
-                      ToastAndroid.showWithGravity(
-                        'Take Slip from Printer',
-                        ToastAndroid.SHORT,
-                        ToastAndroid.CENTER,
-                      );
-                    } catch (e) {
-                      alert(e.message || 'ERROR');
-                    }
+            <View style={styles.cdm}>
+              <Text style={styles.cl}>Staff Name </Text>
+              <View style={styles.searchSt}>
+                <TextInput
+                  placeholder="search"
+                  placeholderTextColor="#696969"
+                  style={styles.searchInputStyle}
+                  value={
+                    // this.state.showSearchContent
+                    // ?
+                    this.state.searchMeeting
+                    // :
+                    // this.state.mName
+                  }
+                  onChangeText={value => {
+                    this.setState({ searchMeeting: value });
+                    this.searchVisitor(value);
                   }}
-                  activeOpacity={0.7}>
-                  <LinearGradient
-                    colors={['#fe8c00', '#fe8c00']}
-                    style={styles.signIn}>
-                    <Text
-                      style={[
-                        styles.textSign,
-                        {
-                          color: '#fff',
-                        },
-                      ]}>
-                      Print
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                // onBlur={e => {
+                //   setTimeout(() => {
+                //     this.setState({showSearchContent: false});
+                //   });
+                // }}
+                // mode="outlined"
+                />
+                <IconAntDesign
+                  style={styles.iconStyle}
+                  name="search"
+                  size={25}
+                  color="#696969"
+                />
               </View>
-            </>
-          )}
+              {!this.state.searchLoader ? (
+                <>
+                  {this.state.showSearchContent ? (
+                    <View
+                      style={{
+                        marginTop: '10%',
+                        width: '100%',
+                      }}>
+                      <View style={styles.flatstyles}>
+                        <ScrollView showsVerticalScrollIndicator={false}>
+                          <View
+                            style={{
+                              marginTop: '5%',
+                              marginBottom: '5%',
+                              width: '100%',
+                            }}>
+                            {this.state.listArray.map((item, i) => {
+                              {
+                                /* console.log('item =>', item); */
+                              }
+                              return (
+                                <React.Fragment key={i}>
+                                  <View style={{ elevation: 1 }}>
+                                    <TouchableOpacity
+                                      style={styles.searchTextSyle}
+                                      value={this.state.mName}
+                                      onPress={() =>
+                                        this.getTextValue(item)
+                                      }>
+                                      <Text style={[styles.searchText]}>
+                                        {item.name}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                </React.Fragment>
+                              );
+                            })}
+                          </View>
+                        </ScrollView>
+                      </View>
+                    </View>
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <View
+                    style={{
+                      flex: 1,
+                      width: '100%',
+                      position: 'absolute',
+                      elevation: 3,
+                      top: '50%',
+                      justifyContent: 'center',
+                    }}>
+                    <ActivityIndicator size="large" color="#0d6efd" />
+                  </View>
+                </>
+              )}
+            </View>
+          </View>
+
         </View>
 
         {/* </ScrollView> */}
@@ -665,11 +532,11 @@ export default class Staff extends Component {
           <View style={styles.link}>
             <Image
               source={require('./image/partner.png')}
-              style={{width: 200, height: 30}}
+              style={{ width: 200, height: 30 }}
             />
           </View>
         </View>
-      </View>
+      </Animatable.View>
     );
   }
 }
@@ -768,7 +635,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 5,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 2,

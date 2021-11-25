@@ -16,9 +16,6 @@ export default class ListInside extends Component {
     super(props);
     this.state = {
       hideInput: false,
-      Password: '',
-      Body: '',
-      Network: '',
       checked: false,
       checkeds: false,
       showAllDeleteIcon: false,
@@ -39,7 +36,7 @@ export default class ListInside extends Component {
       },
     }).then(results => {
       results.json().then(async resp => {
-        console.log('resp ', resp);
+        // console.log('resp ', resp);
         this.setState({
           data: resp,
         });
@@ -47,39 +44,7 @@ export default class ListInside extends Component {
     });
   }
 
-  Checkbox() {
-    if (this.state.checkeds === false) {
-      this.setState({
-        checkeds: true,
-        showAllDeleteIcon: true,
-        showSingleDeleteIcon: true,
-      });
-      console.log('1st', this.state.checkeds, this.state.showAllDeleteIcon);
-    } else {
-      this.setState({
-        checkeds: false,
-        showAllDeleteIcon: false,
-        showSingleDeleteIcon: false,
-      });
-      console.log('2nd', this.state.checkeds, this.state.showAllDeleteIcon);
-    }
-  }
 
-  CheckboxSingle() {
-    if (this.state.checkeds === false) {
-      this.setState({
-        checkeds: true,
-        showSingleDeleteIcon: true,
-      });
-      console.log('1st', this.state.checkeds, this.state.showSingleDeleteIcon);
-    } else {
-      this.setState({
-        checkeds: false,
-        showSingleDeleteIcon: false,
-      });
-      console.log('2nd', this.state.checkeds, this.state.showSingleDeleteIcon);
-    }
-  }
 
   deleteAllData() {
     this.setState({
@@ -89,12 +54,29 @@ export default class ListInside extends Component {
   }
 
   deleteItem(i) {
-    console.log('i :', i);
+    console.log('i :', i); 
     let helperArray = this.state.data;
+    let helperArray2 = this.state.deletionArray;
     helperArray.splice(i, 1);
+    helperArray2.splice(i, 1);
     this.setState({
       data: helperArray,
+      deletionArray: helperArray2,
     });
+  }
+
+  deletedSelectedItems(i) {
+    console.log('hl');
+    let helperArray = this.state.data;
+    let helperArray2 = this.state.deletionArray;
+    for (let i = helperArray2.length - 1; i >= 0; i--) {
+      helperArray.splice(helperArray2[i], 1);
+      helperArray2.splice(i, 1);
+      this.setState({
+        data: helperArray,
+        deletionArray: helperArray2,
+      });
+    }
   }
 
   selectAll() {
@@ -114,20 +96,16 @@ export default class ListInside extends Component {
 
   selectAnItem(i) {
     let helperArray = this.state.deletionArray;
-
-    console.log("helperArray : ",helperArray)
-
     let itemIndex = helperArray.indexOf(i);
+
     if (helperArray.includes(i)) {
       helperArray.splice(itemIndex, 1);
       this.setState({allSelected: false});
-
-      console.log("helperArray if",helperArray.splice(itemIndex, 1));
     } else {
       helperArray.push(i);
-
-      console.log("helperArray.push(i) ",helperArray.push(i));
-      console.log("itemIndex ",itemIndex," helperArray.indexOf(i) ",helperArray.indexOf(i));
+      if (helperArray.length == this.state.data.length) {
+        this.setState({allSelected: true});
+      }
     }
     this.setState({
       deletionArray: helperArray,
@@ -149,6 +127,9 @@ export default class ListInside extends Component {
 
         <View style={styles.cr}>
           <ScrollView showsVerticalScrollIndicator={false}>
+            <Text>Total Users : {this.state.data.length}</Text>
+            <Text>Selected Users : {this.state.deletionArray.length}</Text>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -161,7 +142,7 @@ export default class ListInside extends Component {
               /> */}
               <TouchableOpacity
                 style={styles.btnd}
-                onPress={() => this.selectAnItem()}>
+                onPress={() => this.deletedSelectedItems()}>
                 <Text style={[styles.title, {fontSize: 12}]}>
                   Delete Selected
                 </Text>
