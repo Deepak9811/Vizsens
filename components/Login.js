@@ -199,10 +199,10 @@ export default class Login extends Component {
           this.setState({
             loader: false,
           });
-          ToastAndroid.showWithGravity(
+          ToastAndroid.show(
             resp.message,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
           );
         }
       });

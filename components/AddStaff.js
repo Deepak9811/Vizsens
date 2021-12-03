@@ -28,14 +28,24 @@ export default class Staff extends Component {
         super(props);
         this.state = {
             loader: false,
-            showPhoto: false
+            showPhoto: false,
+            firstName: "",
+            lastName: "",
+            mobile: "",
+            vendorName: ""
         };
     }
 
 
     async componentDidMount() {
-        const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
-        const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
+
+        const vendroID = (await AsyncStorage.getItem('vendorID'))
+        const vendorName = (await AsyncStorage.getItem('vendorName'))
+        this.setState({
+            vendorName: vendorName,
+            venderID: vendroID
+        })
+        // alert(vendorName)
 
     }
 
@@ -65,6 +75,82 @@ export default class Staff extends Component {
             });
     }
 
+
+    checkAllField() {
+        if (this.state.firstName !== ""  && this.state.mobile !== "" && this.state.vendorName !== "") {
+            this.checkNumber()
+            // this.saveVendorData()
+        } else {
+            Alert.alert('Wrong Input', 'Please fill all the fields.', [
+                { text: 'Okay' },
+            ],{cancelable:true});
+        }
+    }
+
+    checkNumber(){
+        if(this.state.mobile.length < 10){
+           alert('Please check mobile number. ');
+       }else{
+        this.saveVendorData()
+       }
+   }
+
+
+    async saveVendorData() {
+        console.log(this.state.firstName, this.state.lastName, this.state.mobile, this.state.vendorName)
+        this.setState({
+            loader: true
+        })
+
+
+
+        const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
+        const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
+
+        console.log(tokenn, terminal)
+
+        fetch(`https://ashoka.vizsense.in/api/ssentry`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                token: tokenn,
+                uid: terminal,
+            },
+            body: JSON.stringify({
+                fname: this.state.firstName,
+                lname: this.state.lastName,
+                mobile: this.state.mobile,
+                vendorId: this.state.venderID,
+                ssPhoto: this.state.image1,
+            })
+        }).then(result => {
+            result.json().then(async resp => {
+                console.log('reasone =>', resp);
+                if (resp.response === "success") {
+                    this.props.navigation.push('Staff')
+                    ToastAndroid.show(
+                        resp.message,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
+                    );
+                    this.setState({
+                        loader: false
+                    })
+
+                }
+            });
+        })
+            .catch(error => {
+                console.log(
+                    'There has been a problem with your fetch operation: ' +
+                    error.message,
+                );
+            });
+    }
+
+
+    
 
 
     render() {
@@ -116,19 +202,22 @@ export default class Staff extends Component {
 
 
                             <View style={{ alignItems: "center", }}>
-                                <TouchableOpacity style={{ borderRadius: 100, borderWidth: 1, }} onPress={() => this.cameraCapture()}>
+                                <TouchableOpacity style={{ borderRadius: 5, borderWidth: 1,marginBottom:"5%" }} onPress={() => this.cameraCapture()}>
 
                                     {!this.state.showPhoto ? (
-                                        <>
-                                            <Feather name="user" size={90} color="#fe8c00" style={{ padding: "5%" }} />
-                                        </>
+                                        <View style={{
+                                            justifyContent: "center", alignItems: "center", height: 250,
+                                            width: 290
+                                        }}>
+                                            <Feather name="user" size={220} color="#fe8c00" />
+                                        </View>
                                     ) : (
                                         <>
                                             <Image
                                                 style={{
-                                                    height: 120,
-                                                    width: 120,
-                                                    borderRadius: 100,
+                                                    height: 250,
+                                                                width: 290,
+                                                    borderRadius: 5,
                                                 }}
                                                 source={{
                                                     uri: `data:${this.state.mime};base64,${this.state.image1}`,
@@ -144,24 +233,21 @@ export default class Staff extends Component {
 
 
 
-                            <Text style={styles.cl}>First Name <Text style={{color:"#FF2020"}}>*</Text></Text>
+                            <Text style={styles.cl}>First Name <Text style={{ color: "#FF2020" }}>*</Text></Text>
                             <View style={styles.searchSt}>
                                 <TextInput
                                     placeholder="First Name"
                                     placeholderTextColor="#696969"
                                     style={styles.searchInputStyle}
                                     value={
-
-                                        this.state.searchMeeting
-
+                                        this.state.firstName
                                     }
                                     onChangeText={value => {
-                                        this.setState({ searchMeeting: value });
-                                        this.searchVisitor(value);
+                                        this.setState({ firstName: value });
                                     }}
 
                                 />
-                               
+
                             </View>
 
 
@@ -175,36 +261,38 @@ export default class Staff extends Component {
                                         placeholderTextColor="#696969"
                                         style={styles.searchInputStyle}
                                         value={
-                                            this.state.searchMeeting
+                                            this.state.lastName
                                         }
                                         onChangeText={value => {
-                                            this.setState({ searchMeeting: value });
-                                            this.searchVisitor(value);
+                                            this.setState({ lastName: value });
+
                                         }}
 
                                     />
-                                    
+
                                 </View>
                             </View>
 
                             <View style={{ marginTop: "5%" }}>
 
-                                <Text style={styles.cl}>Mobile <Text style={{color:"#FF2020"}}>*</Text></Text>
+                                <Text style={styles.cl}>Mobile <Text style={{ color: "#FF2020" }}>*</Text></Text>
                                 <View style={styles.searchSt}>
                                     <TextInput
+                                        maxLength={10}
+                                        keyboardType="numeric"
                                         placeholder="Mobile"
                                         placeholderTextColor="#696969"
                                         style={styles.searchInputStyle}
                                         value={
-                                            this.state.searchMeeting
+                                            this.state.mobile
                                         }
                                         onChangeText={value => {
-                                            this.setState({ searchMeeting: value });
-                                            this.searchVisitor(value);
+                                            this.setState({ mobile: value });
+                                            
                                         }}
 
                                     />
-                                    
+
                                 </View>
                             </View>
 
@@ -212,24 +300,19 @@ export default class Staff extends Component {
 
                             <View style={{ marginTop: "5%" }}>
 
-                                <Text style={styles.cl}>Vendor <Text style={{color:"#FF2020"}}>*</Text></Text>
+                                <Text style={styles.cl}>Vendor <Text style={{ color: "#FF2020" }}>*</Text></Text>
                                 <View style={styles.searchSt}>
                                     <TextInput
                                         placeholder="Vendor"
                                         placeholderTextColor="#696969"
                                         style={styles.searchInputStyle}
                                         value={
-
-                                            this.state.searchMeeting
-
+                                            this.state.vendorName
                                         }
-                                        onChangeText={value => {
-                                            this.setState({ searchMeeting: value });
-                                            this.searchVisitor(value);
-                                        }}
+                                        editable={false}
 
                                     />
-                                    
+
                                 </View>
                             </View>
 
@@ -277,10 +360,10 @@ export default class Staff extends Component {
                                             colors={['#fe8c00', '#fe8c00']}
                                             style={{ borderRadius: 5 }}>
                                             <TouchableOpacity
-                                                  onPress={() => this.props.navigation.navigate('Staff')}
+                                                onPress={() => this.checkAllField()}
                                                 style={styles.btnTouch}>
                                                 <Text
-                                                   style={styles.empIN}>
+                                                    style={styles.empIN}>
                                                     Next
                                                 </Text>
                                                 <Text style={{ padding: '5%', marginTop: '2%' }}>
@@ -353,7 +436,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: '10%',
         fontSize: 16,
-      },
+    },
     ttl: {
         backgroundColor: '#ffffff',
     },

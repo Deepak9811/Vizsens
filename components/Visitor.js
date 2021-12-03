@@ -12,12 +12,12 @@ import {
   ToastAndroid,
   Image,
 } from 'react-native';
-import {Appbar, Card, Button} from 'react-native-paper';
+import {Appbar} from 'react-native-paper';
 import {Picker as SelectPicker} from '@react-native-picker/picker';
 
-// import * as Animatable from 'react-native-animatable';
+import * as Animatable from 'react-native-animatable';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -181,10 +181,10 @@ export class Profile extends Component {
               this.setState({
                 loader: false,
               });
-              ToastAndroid.showWithGravity(
+              ToastAndroid.show(
                 'Number not found',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
               );
             }
           });
@@ -295,9 +295,9 @@ export class Profile extends Component {
   render() {
     // console.log('render file Deepak');
     return (
-      <View
-        animation="fadeInRight"
-        // duration="1000"
+      <Animatable.View
+      animation="fadeInRight"
+      duration={400}
         style={{flex: 1, backgroundColor: '#ececec'}}>
         <Appbar.Header style={styles.ttl}>
           <TouchableOpacity
@@ -390,7 +390,7 @@ export class Profile extends Component {
                 <View style={styles.cdm}>
                   <Text style={[styles.text_footer]}>First Name</Text>
                   <View style={styles.action}>
-                    <FontAwesome name="user-o" color="#05375a" size={20} />
+                    <Feather name="user" color="#05375a" size={20} />
 
                     <TextInput
                       label="First Name"
@@ -408,7 +408,7 @@ export class Profile extends Component {
                 <View style={styles.cdm}>
                   <Text style={[styles.text_footer]}>Last Name</Text>
                   <View style={styles.action}>
-                    <FontAwesome name="user-o" color="#05375a" size={20} />
+                    <Feather name="user" color="#05375a" size={20} />
 
                     <TextInput
                       label="Last Name"
@@ -426,8 +426,7 @@ export class Profile extends Component {
                 <View style={styles.cdm}>
                   <Text style={[styles.text_footer]}>Purpose of meeting</Text>
                   <View style={[styles.action, {marginTop: 0}]}>
-                    <FontAwesome
-                      name="user-o"
+                    <Feather name="user"
                       color="#05375a"
                       size={20}
                       style={{marginTop: 15}}
@@ -576,7 +575,7 @@ export class Profile extends Component {
             />
           </View>
         </View>
-      </View>
+      </Animatable.View>
     );
   }
 }

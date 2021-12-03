@@ -271,17 +271,17 @@ export default class PrintVisitor extends Component {
 
                       this.props.navigation.navigate('Home');
 
-                      ToastAndroid.showWithGravity(
+                      ToastAndroid.show(
                         'Take Slip from Printer',
-                        ToastAndroid.SHORT,
-                        ToastAndroid.CENTER,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
                       );
                     } catch (e) {
                       Alert.alert("Error","Bluetooth Not Found" || 'ERROR');
-                      ToastAndroid.showWithGravity(
+                      ToastAndroid.show(
                         'Entry success',
-                        ToastAndroid.SHORT,
-                        ToastAndroid.CENTER,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
                       );
                       this.props.navigation.navigate('Home');
                     }

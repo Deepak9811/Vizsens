@@ -169,7 +169,7 @@ class ReaderQr extends Component {
         ToastAndroid.showWithGravity(
           error.message,
           ToastAndroid.SHORT,
-          ToastAndroid.TOP,
+          ToastAndroid.BOTTOM,
         );
         console.log(
           'There has been a problem with your fetch operation: ' +
@@ -215,7 +215,7 @@ class ReaderQr extends Component {
         ToastAndroid.showWithGravity(
           error,
           ToastAndroid.SHORT,
-          ToastAndroid.TOP,
+          ToastAndroid.BOTTOM,
         );
       });
   }

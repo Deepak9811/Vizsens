@@ -53,10 +53,10 @@ export default class EmployeeIn extends Component {
     });
 
     if (this.state.searchMeeting.length === 0) {
-      ToastAndroid.showWithGravity(
+      ToastAndroid.show(
         "Enter Employee's name",
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
       );
       this.setState({
         searchLoader: false,
@@ -85,10 +85,10 @@ export default class EmployeeIn extends Component {
               this.setState({
                 searchLoader: false,
               });
-              ToastAndroid.showWithGravity(
+              ToastAndroid.show(
                 resp.message,
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
               );
             }
           });
@@ -97,10 +97,10 @@ export default class EmployeeIn extends Component {
           this.setState({
             searchLoader: false,
           });
-          ToastAndroid.showWithGravity(
+          ToastAndroid.show(
             error.message,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
           );
           console.log(
             'There has been a problem with your fetch operation: ' +
@@ -128,14 +128,16 @@ export default class EmployeeIn extends Component {
 
       }).then((result) => {
         result.json().then(resp => {
+          console.log("employee In : ", resp)
           if (resp.response === 'success') {
             this.props.navigation.push('Home')
-            ToastAndroid.showWithGravity(
-              "Entry success",
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER,
+            ToastAndroid.show(
+              resp.message,
+              ToastAndroid.LONG,
+              ToastAndroid.BOTTOM,
             );
             this.setState({
+              searchMeeting: '',
               loader: false,
             });
           }
@@ -144,10 +146,10 @@ export default class EmployeeIn extends Component {
         this.setState({
           loader: false,
         });
-        ToastAndroid.showWithGravity(
+        ToastAndroid.show(
           error.message,
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
         );
         console.log(
           'There has been a problem with your fetch operation: ' +
@@ -155,9 +157,9 @@ export default class EmployeeIn extends Component {
         );
       });
     } else {
-      Alert.alert('Wrong Input', 'Please fill all the fields.', [
+      Alert.alert('', 'Please fill the fields.', [
         { text: 'Okay' },
-      ]);
+      ],{cancelable:true});
     }
   }
 
@@ -180,26 +182,39 @@ export default class EmployeeIn extends Component {
 
       }).then((result) => {
         result.json().then(resp => {
+          console.log("employee out : ", resp.message)
           if (resp.response === 'success') {
             this.props.navigation.push('Home')
-            ToastAndroid.showWithGravity(
-              "Entry success",
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER,
+            ToastAndroid.show(
+              resp.message,
+              ToastAndroid.LONG,
             );
             this.setState({
+              searchMeeting: '',
               loader: false,
             });
+          } else {
+            // if (resp.message === "set status failed") {
+              this.setState({
+                loader: false,
+              })
+              ToastAndroid.show(
+                resp.message,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+              );
+
+            // }
           }
         })
       }).catch(error => {
         this.setState({
           loader: false,
         });
-        ToastAndroid.showWithGravity(
+        ToastAndroid.show(
           error.message,
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
         );
         console.log(
           'There has been a problem with your fetch operation: ' +
@@ -207,9 +222,9 @@ export default class EmployeeIn extends Component {
         );
       });
     } else {
-      Alert.alert('Wrong Input', 'Please fill all the fields.', [
+      Alert.alert('', 'Please fill the fields.', [
         { text: 'Okay' },
-      ]);
+      ],{cancelable:true});
     }
   }
 

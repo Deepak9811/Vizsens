@@ -22,6 +22,7 @@ import Courier from './components/Courier';
 import ListInside from './components/ListInside';
 import EmployeeIn from './components/EmployeeIn';
 import AddStaff from './components/AddStaff';
+import StaffDetails from './components/StaffDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,26 +47,26 @@ export default class App extends Component {
             headerShown: false,
           }}>
           <>
-            {/* <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Bluetooth" component={Bluetooth} /> */}
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Bluetooth" component={Bluetooth} />
             <Stack.Screen name="Home" component={Home} />
 
             <Stack.Screen name="Courier" component={Courier} />
 
             <Stack.Screen name="EmployeeIn" component={EmployeeIn} />
-            <Stack.Screen name="AddStaff" component={AddStaff} />
-
-
+            
+            
             <Stack.Screen name="Visitor" component={Visitor} />
             <Stack.Screen
-              name="VisitorWithoutMobile"
-              component={VisitorWithoutMobile}
+            name="VisitorWithoutMobile"
+            component={VisitorWithoutMobile}
             />
             <Stack.Screen name="VisitorReason" component={VisitorReason} />
-            <Stack.Screen name="VisitorAcc" component={VisitorAcc} />
+          <Stack.Screen name="VisitorAcc" component={VisitorAcc} />
 
             <Stack.Screen name="Staff" component={Staff} />
-            <Stack.Screen name="StaffIN" component={StaffIN} />
+          <Stack.Screen name="AddStaff" component={AddStaff} />
+            <Stack.Screen name="StaffDetails" component={StaffDetails} />
             <Stack.Screen name="StaffOUT" component={StaffOut} />
 
             <Stack.Screen name="PrintVisitor" component={PrintVisitor} />

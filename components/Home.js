@@ -32,10 +32,10 @@ export default class Home extends Component {
   }
 
   toastAndroid() {
-    ToastAndroid.showWithGravity(
+    ToastAndroid.show(
       'Disable',
-      ToastAndroid.SHORT,
-      ToastAndroid.TOP,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
     );
   }
 
@@ -50,7 +50,7 @@ export default class Home extends Component {
     Alert.alert('', 'Do you want to log out  from app ?', [
       {text: 'Yes', onPress: () => this.clearToken()},
       {text: 'No', onPress: () => console.warn('No Pressed')},
-    ]);
+    ],{cancelable:true});
     return true;
   }
 
@@ -161,15 +161,15 @@ export default class Home extends Component {
               style={{}}
             />
           </TouchableOpacity>
-          <FontAwesome
-            name="user-o"
+          <Feather
+            name="user"
             color="#05375a"
             size={30}
             style={{marginRight: 15, marginLeft: 10}}
           />
         </Appbar.Header>
 
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false} animated={true}>
           <View style={styles.cardShadow}>
             <View style={styles.cdm}>
               <View style={{marginBottom: '5%'}}>
@@ -239,7 +239,7 @@ export default class Home extends Component {
 
               {/* ---------------------EMPLOYEE------------------------------------------ */}
               <View style={styles.cr}>
-                <View style={[styles.inp,{marginBottom:1}]}>
+              <View style={[styles.inp,{marginBottom:0,borderBottomWidth:0}]}>
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => this.props.navigation.navigate('EmployeeIn')}>
@@ -250,7 +250,7 @@ export default class Home extends Component {
                           style={{marginRight: '3%', width: 26, height: 26}}
                         />
                         <Text style={styles.textSign}>
-                          employee
+                          Employee
                         </Text>
                       </View>
                     </View>
@@ -278,9 +278,8 @@ export default class Home extends Component {
               {/* ---------------STAFF----------------------------------- */}
 
               <View style={styles.cr}>
-                <View style={styles.inp}>
+                <View style={[styles.inp,{marginBottom:0,borderBottomWidth:0}]}>
                   <TouchableOpacity
-                    style={styles.button}
                     onPress={() => this.props.navigation.navigate('Staff')}>
                     <View style={[styles.signIn]}>
                       <View style={{flexDirection: 'row'}}>
@@ -289,14 +288,14 @@ export default class Home extends Component {
                           style={{marginRight: '3%', width: 30, height: 30}}
                         />
                         <Text style={styles.textSign}>
-                          Support Staff - Badge Printing
+                          Support Staff 
                         </Text>
                       </View>
                     </View>
                   </TouchableOpacity>
                 </View>
 
-                <View style={{flexDirection: 'row', width: '100%'}}>
+                {/* <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={[styles.inp, {width: '45%', marginBottom: 0}]}>
                     <TouchableOpacity
                       style={styles.button}
@@ -333,7 +332,7 @@ export default class Home extends Component {
                       </View>
                     </TouchableOpacity>
                   </View>
-                </View>
+                </View> */}
               </View>
 
               {/* <View style={styles.inp}>
@@ -356,7 +355,7 @@ export default class Home extends Component {
                 </TouchableOpacity>
               </View> */}
 
-              <View style={[styles.inp, styles.cr]}>
+              {/* <View style={[styles.inp, styles.cr]}>
                 <TouchableOpacity
                   // onPress={() => this.props.navigation.push('Courier')}
                   >
@@ -370,7 +369,7 @@ export default class Home extends Component {
                     </View>
                   </View>
                 </TouchableOpacity>
-              </View>
+              </View> */}
 
               <View style={[styles.inp, styles.cr]}>
                 <TouchableOpacity
@@ -453,10 +452,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F1F1F1',
   },
-  button: {
-    // alignItems: 'center',
-    // marginTop: 30,
-  },
+  
   signIn: {
     width: '100%',
     height: 50,

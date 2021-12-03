@@ -15,6 +15,7 @@ import {Appbar, Button, Card, TextInput} from 'react-native-paper';
 
 import * as Animatable from 'react-native-animatable';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -288,10 +289,10 @@ export class VisitorAcc extends Component {
           });
         })
         .catch(error => {
-          ToastAndroid.showWithGravity(
+          ToastAndroid.show(
             error,
-            ToastAndroid.SHORT,
-            ToastAndroid.TOP,
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
           );
           console.log(
             'There has been a problem with your fetch operation: ' +
@@ -317,9 +318,9 @@ export class VisitorAcc extends Component {
 
   render() {
     return (
-      <View
+      <Animatable.View
         animation="fadeInRight"
-        // duration="1000"
+        duration={400}
         style={{flex: 1, backgroundColor: 'Animatable'}}>
         <Appbar.Header style={styles.ttl}>
           <TouchableOpacity
@@ -417,8 +418,8 @@ export class VisitorAcc extends Component {
                                   marginTop: '8%',
                                   borderRadius: 5,
                                 }}>
-                                <FontAwesome
-                                  name="user-o"
+                                <Feather
+                                  name="user"
                                   size={90}
                                   color="#fe8c00"
                                 />
@@ -672,7 +673,7 @@ export class VisitorAcc extends Component {
             </View>
           </View>
         </ScrollView>
-      </View>
+      </Animatable.View>
     );
   }
 }

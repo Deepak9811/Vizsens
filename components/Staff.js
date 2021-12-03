@@ -11,7 +11,6 @@ import {
   Image,
   ToastAndroid,
 } from 'react-native';
-import IconAntDesign from 'react-native-vector-icons/MaterialIcons';
 import { Appbar, Card } from 'react-native-paper';
 
 import * as Animatable from 'react-native-animatable';
@@ -22,12 +21,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {
-  BluetoothEscposPrinter,
-  BluetoothManager,
-  BluetoothTscPrinter,
-} from 'react-native-bluetooth-escpos-printer';
-import RNQRGenerator from 'rn-qr-generator';
+
 
 export default class Staff extends Component {
   constructor(props) {
@@ -35,62 +29,29 @@ export default class Staff extends Component {
     this.myText = React.createRef();
     this.state = {
       searchMeeting: '',
-      listArray: [],
       purposeData: [],
-      showSearchContent: false,
-      fname: '',
-      lname: '',
-      vistorId: '',
+      staffData: [],
+
       purposeValue: '',
       purposeIndexValue: '',
-      purposeName: '',
+      vendorName: '',
       meetingId: '',
-      loader: false,
+      loader: true,
       hideFetch: false,
       employId: '',
+      staffId: '0',
+      showList: false,
+      disabled: true,
+      hideFirstPicker:true
     };
   }
 
   async componentDidMount() {
+
+
     const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
     const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
-    try {
-      const localVisitorId = JSON.parse(
-        await AsyncStorage.getItem('visitorId'),
-      );
 
-      const localMobile = JSON.parse(
-        await AsyncStorage.getItem('visitorMobile'),
-      );
-
-      const localFirstName = JSON.parse(
-        await AsyncStorage.getItem('visitorFirstName'),
-      );
-
-      const localLastName = JSON.parse(
-        await AsyncStorage.getItem('visitorLastName'),
-      );
-
-      console.log(
-        'visitorId :',
-        localVisitorId,
-        'visitorMobile : ',
-        localMobile,
-        'visito Firstname : ',
-        localFirstName,
-        'visitorLastName : ',
-        localLastName,
-      );
-
-      this.setState({
-        vistorId: localVisitorId,
-        mobile: localMobile,
-        fname: localFirstName,
-        lname: localLastName,
-      });
-    } catch (error) {
-      console.log('error in local data :', error);
-    }
 
     fetch(`https://ashoka.vizsense.in/api/vendors`, {
       method: 'GET',
@@ -101,12 +62,14 @@ export default class Staff extends Component {
     })
       .then(data => {
         data.json().then(async resp => {
-          console.log('reasone =>', resp.data);
+          console.log('reasone =>', resp.data[0]);
           if (resp.response === 'success') {
             this.setState({
               purposeData: resp.data,
+              loader: false,
+
             });
-            // console.log('puo :', this.state.purposeData);
+            // console.log('puo :--------------------------', this.state.staffData);
           }
         });
       })
@@ -116,31 +79,73 @@ export default class Staff extends Component {
           error.message,
         );
       });
+
   }
 
-  async searchVisitor(value) {
-    const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
-    const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
-    console.log('hlloe');
-    this.setState({
-      listArray: [],
-    });
 
-    if (!this.state.searchMeeting.length == 0) {
-      this.setState({ listArray: [], showSearchContent: true, searchLoader: true, });
-      console.log('seachmeeting length :-', this.state.searchMeeting.length)
-    } else {
-      console.log('seachmeeting =============',)
-      this.setState({ listArray: [], showSearchContent: false, searchLoader: false, });
+
+
+
+
+
+  onPickerValueChange = (value, index, label) => {
+    if(value > 0){
+      console.log("value greater",value)
+      this.setState(
+        {
+          purposeValue: value,
+          vendorName: this.state.purposeData[index - 1].vendroName,
+        },
+        () => {
+          console.log("this.state.purposeData[index].vendroName ", value, index, label, this.state.purposeData[index - 1].vendroName)
+          this.getVendorID();
+          this.setState({
+            // hideFirstPicker:false,
+            loader: true,
+            disabled: false
+          })
+        },
+      );
+
+    }else{
+      console.log("value less "+value)
     }
 
 
 
-    // let sParameter = value;
-    // sParameter = encodeURIComponent(sParameter.trim());
+   
+
+  };
+
+
+
+
+
+
+  async getVendorID() {
+    const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
+    const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
+    // this.setState({
+    //   staffId: "0",
+    //   loaderList: true,
+
+    // })
+    try {
+      await AsyncStorage.setItem('vendorName', (this.state.vendorName));
+      await AsyncStorage.setItem('vendorID', JSON.stringify(this.state.purposeValue));
+      const purp = (await AsyncStorage.getItem('vendorName'))
+
+      console.log(purp)
+    } catch (error) {
+      console.log(error)
+    }
+    console.log("purposeValue 1:---------", this.state.purposeValue, this.state.staffId, this.state.vendorName, tokenn)
+
+
+
 
     fetch(
-      `https://ashoka.vizsense.in/api/supportstaff?vendorId=${this.state.purposeValue}&prefix=${this.state.searchMeeting}&staffId=0`,
+      `https://ashoka.vizsense.in/api/supportstaff?vendorId=${this.state.purposeValue}&prefix=${this.state.searchMeeting}&staffId=${this.state.staffId}`,
       {
         method: 'GET',
         headers: {
@@ -148,203 +153,58 @@ export default class Staff extends Component {
           uid: terminal,
         },
       },
-    )
-      .then(data => {
-        data.json().then(resp => {
-          // console.log('searcher =>', resp.data);
-          if (resp.response == 'success') {
-            // console.log('search =>', resp);
-            this.setState({
-              listArray: resp.data,
-              showSearchContent: true,
-              searchLoader: false,
-            });
-          } else {
-            this.setState({
-              showSearchContent: false,
-              searchLoader: false,
-            });
-            ToastAndroid.showWithGravity(
-              resp.message,
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER,
-            );
+    ).then(result => {
+      result.json().then(resp => {
+        console.log('employeeId : ', resp);
+        if (resp.response === 'success') {
+          this.setState({
+            staffData: resp.data,
+            loader: false,
+            showList: true,
+            loaderList: false,
+          })
 
-          }
-        });
-      })
-      .catch(error => {
-        ToastAndroid.showWithGravity(
-          error.message,
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
-        console.log(
-          'There has been a problem with your fetch operation: ' +
-          error.message,
-        );
-        this.setState({
-          searchLoader: false,
-        });
+        } else {
+          console.log('error');
+        }
       });
-  }
-
-  checkReason() {
-    if (
-      this.state.purposeValue !== '' &&
-      this.state.mName !== '' &&
-      this.state.mobile !== ''
-    ) {
-      this.addVisitorReason();
-    } else {
-      Alert.alert('Wrong Input', 'Please fill all the fields.', [
-        { text: 'Okay' },
-      ]);
-    }
-  }
-
-  async addVisitorReason() {
-    console.log(
-      'mobile:',
-      this.state.mobile,
-      ', meeting:',
-      this.state.mName,
-      ', purpose value:',
-      this.state.purposeValue,
-    );
-
-    this.setState({
-      loader: true,
+    }).catch(error => {
+      console.log(
+        'There has been a problem with your fetch operation: ' +
+        error.message,
+      );
     });
-
-    try {
-      await AsyncStorage.setItem(
-        'meetingName',
-        JSON.stringify(this.state.employId),
-      );
-      await AsyncStorage.setItem(
-        'purposeValue',
-        JSON.stringify(this.state.purposeValue),
-      );
-    } catch (error) {
-      console.log('error' + error);
-    }
-
-    this.getMeetingId();
   }
 
-  async getMeetingId() {
-    try {
-      const meetingName = JSON.stringify(
-        await AsyncStorage.getItem('meetingName'),
-      );
-      const purpose = JSON.parse(await AsyncStorage.getItem('purposeValue'));
-      console.log('meeting =>', meetingName, ', purposeValue =>', purpose);
-      // this.props.navigation.navigate('VisitorAcc');
-      this.setState({
-        loader: false,
-      });
-    } catch (error) {
-      console.log('error' + error);
-      this.setState({
-        loader: false,
-      });
-    }
-  }
-
-  // addrenderItem(item) {
-  //   return (
-  //     <TouchableOpacity
-  //       style={{elevation: 3, flex: 1}}
-  //       onPress={() => alert('clicked')}>
-  //       <Text style={styles.flatText} value={this.state.mName}>
-  //         {item.m_name}
-  //       </Text>
-  //     </TouchableOpacity>
-  //   );
-  // }
-
-  onPickerValueChange = (value, index, label) => {
-    this.setState(
-      {
-        purposeValue: value,
-        purposeName: this.state.purposeData[index].purpose,
-      },
-      // () => {
-      //   console.log(this.state.purposeData[index].p_name);
-      // },
-    );
-  };
 
   async getTextValue(item) {
-    const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
-    const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
+    // const meting = item.name;
 
-    console.log(item.staffId);
-    const meting = item.name;
-    const staffId = item.staffId;
+    this.state.staffId = item.staffId;
 
-    this.state.mName = meting;
-    this.state.employId = item.staffId;
-    this.state.searchMeeting = meting;
-    this.setState({
-      showSearchContent: false,
-    });
-    console.log(
-      'name => ',
-      this.state.mName,
-      ' employId : ',
-      this.state.employId,
-      ' searchMeeting : ',
-      this.state.searchMeeting,
-    );
+    try {
+      if (!this.state.staffId !== '' && !this.state.purposeValue !== '') {
+        console.log("purposeValue 1:-", this.state.purposeValue)
+        await AsyncStorage.setItem('staffId', JSON.stringify(this.state.staffId));
+        await AsyncStorage.setItem('purposeValue', JSON.stringify(this.state.purposeValue));
+        const loc = JSON.stringify(await AsyncStorage.getItem('staffId'))
+        const purp = JSON.stringify(await AsyncStorage.getItem('purposeValue'))
+        this.props.navigation.push('StaffDetails')
 
-    if (item.employeeId) {
-      fetch(
-        `https://ashoka.vizsense.in/api/supportstaff?vendorId=${this.state.purposeValue}&prefix=${this.state.searchMeeting}&staffId=${staffId}`,
-        {
-          method: 'GET',
-          headers: {
-            token: tokenn,
-            uid: terminal,
-          },
-        },
-      ).then(result => {
-        result.json().then(resp => {
-          console.log('employeeId : ', resp.data[0].employeeId);
-          if (resp.response === 'success') {
-            this.setState({
-              staffName: resp.data[0].name,
-              staffEmpoyeeID: resp.data[0].employeeId,
-              staffValidTill: resp.data[0].validtill,
-              staffMobile: resp.data[0].mobile,
-              hideFetch: true,
-            });
-            this.getTextInputValue();
-          } else {
-            console.log('error');
-          }
-        });
-      });
+        console.log(loc, purp)
+      } else {
+        console.log("Something Wents Wrong")
+      }
+
+    } catch (error) {
+      console.log(error)
     }
+
+    console.log(
+      'name => ', item.staffId,
+    );
   }
 
-  getTextInputValue() {
-    RNQRGenerator.generate({
-      value: this.state.staffEmpoyeeID,
-      height: 200,
-      width: 200,
-      base64: true,
-    })
-      .then(response => {
-        const { uri, width, height, base64 } = response;
-        this.setState({
-          base64Image: base64,
-        });
-        console.warn(this.state.base64Image);
-      })
-      .catch(error => console.log('Cannot create QR code', error));
-  }
 
   render() {
     return (
@@ -367,18 +227,11 @@ export default class Staff extends Component {
                 width: '100%',
                 position: 'absolute',
                 elevation: 3,
-                backgroundColor: 'rgba(0,0,0,0.2)',
+                backgroundColor: 'rgba(0,0,0,0.15)',
               }}></View>
             <View
-              style={{
-                flex: 1,
-                width: '100%',
-                position: 'absolute',
-                elevation: 3,
-                top: '50%',
-                justifyContent: 'center',
-              }}>
-              <ActivityIndicator size="large" color="#0d6efd" />
+              style={styles.lod}>
+              <ActivityIndicator size="large" color="#009BFF" />
             </View>
           </>
         ) : null}
@@ -394,16 +247,19 @@ export default class Staff extends Component {
                     Select the option below to proceed further...
                   </Text>
                 </View>
-                <TouchableOpacity onPress={() => this.props.navigation.push("AddStaff")}>
-                  <Text><Feather name="user-plus" size={25} /></Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => this.props.navigation.push("AddStaff")} disabled={this.state.disabled}>
+                  <Text><Feather name="user-plus" size={25} /></Text>
+                </TouchableOpacity>
               </View>
 
               <Text style={styles.cl}>Vendor</Text>
 
               <View style={styles.pkr}>
                 <SelectPicker
+               
                   style={{ width: '100%' }}
                   // mode="dropdown"
+                  // dropdownIconColor={'red'}
                   selectedValue={this.state.purposeValue}
                   onValueChange={(value, index, label) => {
                     this.onPickerValueChange(value, index, label),
@@ -411,10 +267,21 @@ export default class Staff extends Component {
                         purposeIndexValue: value,
                       });
                   }}>
+                  
+                  {/* {this.state.hideFirstPicker ?( */}
+                  <SelectPicker.item
+                    label="Select Vendor"
+                    color="#aaa"
+                    value="0"
+                    // enabled={false}
+                    
+                  />
+                  {/* ):null} */}
+
                   {this.state.purposeData.map((item, i) => (
                     <SelectPicker.item
                       label={item.vendroName}
-                      color="#6f6f6f"
+                      color="#000407"
                       value={item.vendorId}
                     />
                   ))}
@@ -423,96 +290,44 @@ export default class Staff extends Component {
             </View>
 
             <View style={styles.cdm}>
-              <Text style={styles.cl}>Staff Name </Text>
-              <View style={styles.searchSt}>
-                <TextInput
-                  placeholder="search"
-                  placeholderTextColor="#696969"
-                  style={styles.searchInputStyle}
-                  value={
-                    // this.state.showSearchContent
-                    // ?
-                    this.state.searchMeeting
-                    // :
-                    // this.state.mName
-                  }
-                  onChangeText={value => {
-                    this.setState({ searchMeeting: value });
-                    this.searchVisitor(value);
-                  }}
-                // onBlur={e => {
-                //   setTimeout(() => {
-                //     this.setState({showSearchContent: false});
-                //   });
-                // }}
-                // mode="outlined"
-                />
-                <IconAntDesign
-                  style={styles.iconStyle}
-                  name="search"
-                  size={25}
-                  color="#696969"
-                />
-              </View>
-              {!this.state.searchLoader ? (
-                <>
-                  {this.state.showSearchContent ? (
-                    <View
-                      style={{
-                        marginTop: '10%',
-                        width: '100%',
-                      }}>
-                      <View style={styles.flatstyles}>
-                        <ScrollView showsVerticalScrollIndicator={false}>
-                          <View
-                            style={{
-                              marginTop: '5%',
-                              marginBottom: '5%',
-                              width: '100%',
-                            }}>
-                            {this.state.listArray.map((item, i) => {
-                              {
-                                /* console.log('item =>', item); */
-                              }
-                              return (
-                                <React.Fragment key={i}>
-                                  <View style={{ elevation: 1 }}>
-                                    <TouchableOpacity
-                                      style={styles.searchTextSyle}
-                                      value={this.state.mName}
-                                      onPress={() =>
-                                        this.getTextValue(item)
-                                      }>
-                                      <Text style={[styles.searchText]}>
-                                        {item.name}
-                                      </Text>
-                                    </TouchableOpacity>
-                                  </View>
-                                </React.Fragment>
-                              );
-                            })}
-                          </View>
-                        </ScrollView>
+
+              {this.state.showList ? (
+
+                <View style={{
+                  marginTop: '3%',
+                }}>
+                  <Text style={[styles.cl,{marginBottom:"3%"}]}>Staff Name</Text>
+                  <View style={styles.flatstyles}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+
+                      <View style={{ marginTop: '1%', marginBottom: '1%', }}>
+                        {this.state.staffData.map((item, i) => {
+                          return (
+                            <React.Fragment key={i}>
+                              <View style={{ elevation: 1 }}>
+                                <TouchableOpacity
+                                  style={styles.searchTextSyle}
+                                  onPress={() => this.getTextValue(item)}>
+                                  <Text style={[styles.searchText]}>
+                                    {item.name}
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+
+
+                            </React.Fragment>
+                          );
+                        })}
                       </View>
-                    </View>
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  <View
-                    style={{
-                      flex: 1,
-                      width: '100%',
-                      position: 'absolute',
-                      elevation: 3,
-                      top: '50%',
-                      justifyContent: 'center',
-                    }}>
-                    <ActivityIndicator size="large" color="#0d6efd" />
+
+                    </ScrollView>
                   </View>
-                </>
-              )}
+                </View>
+              ) : null}
+
             </View>
+
+
           </View>
 
         </View>
@@ -553,7 +368,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   flatstyles: {
-    maxHeight: 200,
+    maxHeight: 270,
     width: '100%',
     // position: 'absolute',
     // elevation: 1,
@@ -561,27 +376,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
   },
-  flatText: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    marginVertical: 2,
-    color: 'black',
-  },
-  searchSt: {
-    marginTop: 8,
-    width: '100%',
-    backgroundColor: '#f1f1f1',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderRadius: 5,
-    borderWidth: 1,
-  },
-  iconStyle: {
-    paddingTop: 15,
-    marginHorizontal: 10,
-  },
+  
+  
+  
   searchText: {
     flex: 1,
     fontSize: 22,
@@ -617,7 +414,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRadius: 5,
     alignSelf: 'center',
-    backgroundColor: '#f3f3f3',
+    backgroundColor: '#f2f2f2',
   },
   fnts: {
     fontSize: 16,
@@ -693,4 +490,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 30,
   },
+  lod: {
+    flex: 1,
+    width: '100%',
+    position: 'absolute',
+    elevation: 3,
+    top: '50%',
+    justifyContent: 'center',
+  }
 });

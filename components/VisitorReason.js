@@ -6,18 +6,15 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  FlatList,
   Alert,
   ActivityIndicator,
-  Button,
   Image,
-  ToastAndroid,
+  ToastAndroid,TouchableWithoutFeedback,Keyboard
 } from 'react-native';
 import IconAntDesign from 'react-native-vector-icons/MaterialIcons';
 import {Appbar, Card} from 'react-native-paper';
 
-// import * as Animatable from 'react-native-animatable';
-import {Picker as SelectPicker} from '@react-native-picker/picker';
+import * as Animatable from 'react-native-animatable';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -139,10 +136,10 @@ export default class VisitorReason extends Component {
     });
 
 if(this.state.searchMeeting.length === 0){
-  ToastAndroid.showWithGravity(
+  ToastAndroid.show(
     "Enter person's name",
-    ToastAndroid.SHORT,
-    ToastAndroid.CENTER,
+    ToastAndroid.LONG,
+    ToastAndroid.BOTTOM,
   );
   this.setState({
     searchLoader: false,
@@ -173,10 +170,10 @@ if(this.state.searchMeeting.length === 0){
             this.setState({
               searchLoader:false
             })
-            ToastAndroid.showWithGravity(
+            ToastAndroid.show(
               resp.message,
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER,
+              ToastAndroid.LONG,
+              ToastAndroid.BOTTOM,
             );
           }
         });
@@ -185,10 +182,10 @@ if(this.state.searchMeeting.length === 0){
         this.setState({
           searchLoader:false
         })
-        ToastAndroid.showWithGravity(
+        ToastAndroid.show(
           error.message,
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
         );
         console.log(
           'There has been a problem with your fetch operation: ' +
@@ -259,17 +256,6 @@ if(this.state.searchMeeting.length === 0){
     }
   }
 
-  // addrenderItem(item) {
-  //   return (
-  //     <TouchableOpacity
-  //       style={{elevation: 3, flex: 1}}
-  //       onPress={() => alert('clicked')}>
-  //       <Text style={styles.flatText} value={this.state.mName}>
-  //         {item.m_name}
-  //       </Text>
-  //     </TouchableOpacity>
-  //   );
-  // }
 
   onPickerValueChange = (value, index, label) => {
     this.setState(
@@ -302,7 +288,9 @@ if(this.state.searchMeeting.length === 0){
 
   render() {
     return (
-      <View animation="fadeInRight" style={styles.container}>
+      <Animatable.View
+      animation="fadeInRight"
+      duration={400} style={styles.container}>
         <Appbar.Header style={styles.ttl}>
           <TouchableOpacity
             style={{paddingLeft: '2%'}}
@@ -355,8 +343,10 @@ if(this.state.searchMeeting.length === 0){
 
             <View style={styles.cdm}>
               <Text style={styles.cl}>Meeting Whom</Text>
-              <View style={styles.searchSt}>
+              <View  style={styles.searchSt}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <TextInput
+                returnKeyType="go"
                   placeholder="search"
                   placeholderTextColor="#696969"
                   style={styles.searchInputStyle}
@@ -365,6 +355,7 @@ if(this.state.searchMeeting.length === 0){
                     this.setState({searchMeeting: value});
                   }}
                 />
+                </TouchableWithoutFeedback>
                 <TouchableOpacity
                   onPress={value => this.searchVisitor(value)}
                   style={{borderLeftWidth: 1}}>
@@ -533,7 +524,7 @@ if(this.state.searchMeeting.length === 0){
             />
           </View>
         </View>
-      </View>
+      </Animatable.View>
     );
   }
 }
