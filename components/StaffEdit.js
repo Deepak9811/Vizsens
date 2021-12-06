@@ -1,3 +1,6 @@
+
+
+
 import React, { Component } from 'react';
 import {
     Text,
@@ -38,134 +41,211 @@ export default class Staff extends Component {
         };
     }
 
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener(
-    //       'hardwareBackPress',
+
     
-    //       this.props.navigation.navigate('Staff')
-    //     );
-    //   }
 
 
     async componentDidMount() {
 
-        const vendroID = (await AsyncStorage.getItem('vendorID'))
-        const vendorName = (await AsyncStorage.getItem('vendorName'))
         this.setState({
-            vendorName: vendorName,
-            venderID: vendroID
-        })
-        // alert(vendorName)
-
-    }
-
-    cameraCapture() {
-
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: false,
-            includeBase64: true,
-            compressImageQuality: 0.18,
-            size: 25,
-        })
-            .then(image => {
-                console.warn(image);
-                this.setState({
-                    image1: image.data,
-                    mime: image.mime,
-                    showPhoto: true,
-                });
-
-                // this.onChangeImage(image)
-            })
-            .catch(error => {
-                console.log(error.message);
-
-            });
-    }
-
-
-    checkAllField() {
-console.log("this.state.image1 ",this.state.image1.length)
-        if (this.state.firstName !== ""  && this.state.mobile !== "" && this.state.vendorName !== "" && this.state.image1.length !== 0) {
-            this.checkNumber()
-            // this.saveVendorData()
-        } else {
-            Alert.alert('Wrong Input', 'Please fill all the fields.', [
-                { text: 'Okay' },
-            ],{cancelable:true});
-        }
-    }
-
-    checkNumber(){
-        if(this.state.mobile.length < 10){
-           alert('Please check mobile number. ');
-       }else{
-        this.saveVendorData()
-       }
-   }
-
-
-    async saveVendorData() {
-        console.log(this.state.firstName, this.state.lastName, this.state.mobile, this.state.vendorName)
-        this.setState({
-            loader: true
+            loader:true
         })
 
 
-
-        const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
-        const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
-
-        console.log(tokenn, terminal)
-
-        fetch(`https://ashoka.vizsense.in/api/ssentry`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                token: tokenn,
-                uid: terminal,
-            },
-            body: JSON.stringify({
-                fname: this.state.firstName,
-                lname: this.state.lastName,
-                mobile: this.state.mobile,
-                vendorId: this.state.venderID,
-                ssPhoto: this.state.image1,
-            })
-        }).then(result => {
-            result.json().then(async resp => {
-                console.log('reasone =>', resp);
-                if (resp.response === "success") {
-                    ToastAndroid.show(
-                        resp.message,
-                        ToastAndroid.LONG,
-                        ToastAndroid.BOTTOM,
-                        );
-                        this.props.navigation.navigate('Staff')
-                        this.setState({
-                            loader: false
+                const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
+                const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
+                const loc = (await AsyncStorage.getItem('staffId'))
+                const purp = (await AsyncStorage.getItem('purposeValue'))
+                const vendroID = (await AsyncStorage.getItem('vendorID'))
+        
+        
+                console.log(loc, purp,vendroID)
+                fetch(
+                    `https://ashoka.vizsense.in/api/supportstaff?vendorId=${purp}&prefix=&staffId=${loc}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            token: tokenn,
+                            uid: terminal,
+                        },
+                    },
+                )
+                    .then(result => {
+                        result.json().then(resp => {
+                            console.log('userAddress : ', resp.data[0]);
+        
+                            if (resp.response === 'success') {
+                                this.setState({
+                                    staffId: resp.data[0].staffId,
+                                    fname: resp.data[0].fname,
+                                    lname: resp.data[0].lname,
+                                    vendor: resp.data[0].vendor,
+                                    mobile: resp.data[0].mobile,
+                                    joinedon: resp.data[0].joinedon,
+                                    validtill: resp.data[0].validtill,
+        
+                                    showPhoto: true,
+                                    loader: false,
+                                });
+        
+                                if (resp.data[0].photo === "") {
+                                    // alert("empt")
+                                    this.setState({
+                                        showPhoto: false,
+                                    })
+                                } else {
+                                    this.setState({
+                                        image1: resp.data[0].photo,
+                                        showPhoto: true,
+                                    })
+                                }
+                            } else {
+                                this.setState({
+                                    loader: false,
+                                });
+                                ToastAndroid.show(
+                                    'Something wents wrong.',
+                                    ToastAndroid.LONG,
+                                    ToastAndroid.BOTTOM,
+                                );
+                            }
+        
+                            // console.log(this.state.image);
+                        });
                     })
-
-                }else{
-                    Alert.alert('',resp.message, [
-                        { text: 'Okay' },
-                    ],{cancelable:true});
+                    .catch(error => {
+                        this.setState({
+                            loader: false,
+                        });
+                        Alert.alert('Error', error.message, [{ text: 'Okay' }], { cancelable: true });
+                    });
+        
+        
+            }
+        
+        
+        
+            cameraCapture() {
+        
+                ImagePicker.openCamera({
+                    width: 300,
+                    height: 400,
+                    cropping: false,
+                    includeBase64: true,
+                    compressImageQuality: 0.18,
+                    size: 25,
+                })
+                    .then(image => {
+                        console.warn(image);
+                        this.setState({
+                            image1: image.data,
+                            mime: image.mime,
+                            showPhoto: true,
+                        });
+        
+                        // this.onChangeImage(image)
+                    })
+                    .catch(error => {
+                        console.log(error.message);
+        
+                    });
+            }
+        
+            checkAllField() {
+                console.log("SupportStaffID :",this.state.staffId,
+                    "fname: ",this.state.fname,
+                    "lname: ",this.state.lname,
+                    "mobile: ",this.state.mobile,
+                    "vendorId: ",this.state.vendor,
+                    )
+                        if (this.state.fname !== "" && this.state.lname !== ""   && this.state.mobile !== "" && this.state.vendor !== "" && this.state.image1.length !== 0) {
+                            this.checkNumber()
+                            // console.log("hello world")
+                        } else {
+                            Alert.alert('Wrong Input', 'Please fill all the fields.', [
+                                { text: 'Okay' },
+                            ],{cancelable:true});
+                        }
+                    }
+                
+                    checkNumber(){
+                        if(this.state.mobile.length < 10){
+                           alert('Please check mobile number. ');
+                       }else{
+                        this.saveVendorData()
+                       }
+                   }
+        
+        
+                   async saveVendorData() {
+                    console.log(this.state.firstName, this.state.lastName, this.state.mobile, this.state.vendor)
+                    this.setState({
+                        loader: true
+                    })
+            
+            
+            
+                    const tokenn = JSON.parse(await AsyncStorage.getItem('token'));
+                    const terminal = JSON.parse(await AsyncStorage.getItem('terminalid'));
+                    const vendroID = (await AsyncStorage.getItem('vendorID'))
+            
+                    console.log("staff id "+this.state.staffId)
+            
+                    fetch(`https://ashoka.vizsense.in/api/ssentry`, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                            token: tokenn,
+                            uid: terminal,
+                        },
+                        body: JSON.stringify({
+                            SupportStaffID:this.state.staffId,
+                            fname: this.state.fname,
+                            lname: this.state.lname,
+                            mobile: this.state.mobile,
+                            vendorId: vendroID,
+                            ssPhoto: this.state.image1,
+                        })
+                    }).then(result => {
+                        result.json().then(async resp => {
+                            console.log('reasone =>', resp.data);
+                            if (resp.response === "success") {
+                                ToastAndroid.show(
+                                    resp.message,
+                                    ToastAndroid.LONG,
+                                    ToastAndroid.BOTTOM,
+                                    );
+                                    this.props.navigation.navigate('Staff')
+                                    this.setState({
+                                        loader: false
+                                })
+            
+                            }else{
+                                ToastAndroid.show(
+                                    resp.message,
+                                    ToastAndroid.LONG,
+                                    ToastAndroid.BOTTOM,
+                                    );
+                                this.setState({
+                                    loader: false
+                            })
+                            }
+                        });
+                    })
+                        .catch(error => {
+                            console.log(
+                                'There has been a problem with your fetch operation: ' +
+                                error.message,
+                            );
+                            this.setState({
+                                loader: false
+                        })
+                        });
                 }
-            });
-        })
-            .catch(error => {
-                console.log(
-                    'There has been a problem with your fetch operation: ' +
-                    error.message,
-                );
-            });
-    }
+        
+        
 
-
-    
 
 
     render() {
@@ -211,7 +291,7 @@ console.log("this.state.image1 ",this.state.image1.length)
                         <View style={[styles.cdm]}>
                             <View style={{ marginVertical: "5%" }}>
                                 <Text style={{ color: '#959595' }}>
-                                    Please enter the details below to proceed further...
+                                    Please check the details below to proceed further...
                                 </Text>
                             </View>
 
@@ -255,10 +335,10 @@ console.log("this.state.image1 ",this.state.image1.length)
                                     placeholderTextColor="#696969"
                                     style={styles.searchInputStyle}
                                     value={
-                                        this.state.firstName
+                                        this.state.fname
                                     }
                                     onChangeText={value => {
-                                        this.setState({ firstName: value });
+                                        this.setState({ fname: value });
                                     }}
 
                                 />
@@ -276,10 +356,10 @@ console.log("this.state.image1 ",this.state.image1.length)
                                         placeholderTextColor="#696969"
                                         style={styles.searchInputStyle}
                                         value={
-                                            this.state.lastName
+                                            this.state.lname
                                         }
                                         onChangeText={value => {
-                                            this.setState({ lastName: value });
+                                            this.setState({ lname: value });
 
                                         }}
 
@@ -322,7 +402,7 @@ console.log("this.state.image1 ",this.state.image1.length)
                                         placeholderTextColor="#696969"
                                         style={styles.searchInputStyle}
                                         value={
-                                            this.state.vendorName
+                                            this.state.vendor
                                         }
                                         editable={false}
 
@@ -340,7 +420,7 @@ console.log("this.state.image1 ",this.state.image1.length)
                                             colors={['#fe8c00', '#fe8c00']}
                                             style={{ borderRadius: 5 }}>
                                             <TouchableOpacity
-                                                onPress={() =>  this.props.navigation.navigate('Staff')}
+                                                onPress={() => this.props.navigation.navigate('Staff')}
 
                                                 style={styles.btnTouch}>
                                                 <Text
@@ -379,7 +459,7 @@ console.log("this.state.image1 ",this.state.image1.length)
                                                 style={styles.btnTouch}>
                                                 <Text
                                                     style={styles.empIN}>
-                                                    Next
+                                                    Save
                                                 </Text>
                                                 <Text style={{ padding: '5%', marginTop: '2%' }}>
                                                     <AntDesign

@@ -424,7 +424,7 @@ if(this.state.searchMeeting.length === 0){
             </View>
           </View>
 
-          <View style={{marginTop: '5%', marginBottom: '15%'}}>
+          <View style={{marginTop: '5%', marginBottom: '8%'}}>
             <View style={styles.cdm}>
               <View style={{flexDirection: 'row'}}>
                 <View style={styles.wd}>
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   flatstyles: {
-    maxHeight: 450,
+    maxHeight: 400,
     width: '100%',
     // position: 'absolute',
     // elevation: 1,

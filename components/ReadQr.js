@@ -326,8 +326,7 @@ class ReaderQr extends Component {
                                 }
                               /> */}
 
-                              <TouchableOpacity
-                                onPress={() => this.cameraCapture()}>
+                              <View>
                                 {this.state.visibleImage1New ? (
 
                                   <Image
@@ -369,7 +368,7 @@ class ReaderQr extends Component {
                                     />
                                   </Text>
                                 )}
-                              </TouchableOpacity>
+                              </View>
                             </View>
                           </Card>
                         </View>
@@ -378,8 +377,8 @@ class ReaderQr extends Component {
                           <Card>
                             <View style={styles.centCam}>
                               <Text style={styles.centCamInfo}>ID Proof</Text>
-                              <TouchableOpacity
-                                onPress={() => this.cameraCapture2()}>
+                              <View
+                                >
                                 {this.state.visibleImage2New ? (
                                   <Image
                                     style={{
@@ -422,7 +421,7 @@ class ReaderQr extends Component {
 
                                   
                                 )}
-                              </TouchableOpacity>
+                              </View>
                             </View>
                           </Card>
                         </View>
@@ -439,8 +438,8 @@ class ReaderQr extends Component {
                               <Text style={styles.centCamInfo}>
                                 Accessories
                               </Text>
-                              <TouchableOpacity
-                                onPress={() => this.cameraCapture3()}>
+                              <View
+                                >
                                 {this.state.visibleImage3New ? (
                                   <Image
                                     style={{
@@ -480,7 +479,7 @@ class ReaderQr extends Component {
 
                                   
                                 )}
-                              </TouchableOpacity>
+                              </View>
                             </View>
                           </Card>
                         </View>
@@ -490,8 +489,7 @@ class ReaderQr extends Component {
                             <View style={styles.centCam}>
                               <Text style={styles.centCamInfo}>Vehicle</Text>
 
-                              <TouchableOpacity
-                                onPress={() => this.cameraCapture4()}>
+                              <View>
                                 {this.state.visibleImage4New ? (
                                   <Image
                                     style={{
@@ -533,7 +531,7 @@ class ReaderQr extends Component {
 
                                   
                                 )}
-                              </TouchableOpacity>
+                              </View>
                             </View>
                           </Card>
                         </View>

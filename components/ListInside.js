@@ -31,6 +31,8 @@ export default class ListInside extends Component {
     };
   }
 
+  
+
   async componentDidMount() {
     this.getVisitorInside()
   }
@@ -330,7 +332,7 @@ export default class ListInside extends Component {
         <View style={styles.cr}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{flexDirection:"row"}}>
-            <Text style={{width:"30%"}}>Total Users</Text><Text>: {this.state.data.length}</Text>
+            <Text style={{width:"18%"}}>Total Users</Text><Text>: {this.state.data.length}</Text>
             </View>
             <Text>Selected Users : {this.state.deletionArray.length}</Text>
 
@@ -366,7 +368,7 @@ export default class ListInside extends Component {
               ) : null}
 
               {this.state.data.map((item, i) => {
-
+                {console.log(item.dtEntryDate.replace("T"," "))}
                 return (
                   <React.Fragment key={i}>
                     <View
@@ -393,7 +395,7 @@ export default class ListInside extends Component {
                           {item.vSlipNo}
                         </Text>
                         <Text style={[styles.title,]}>{item.vFirstName} {item.vLastName}</Text>
-                        <Text style={[styles.title,]}>{item.dtEntryDate}</Text>
+                        <Text style={[styles.title,]}>{item.dtEntryDate.replace("T"," ")}</Text>
                       </View>
 
                       {/* <TouchableOpacity

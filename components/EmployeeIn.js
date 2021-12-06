@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   Button,
   Image,
-  ToastAndroid,
+  ToastAndroid,BackHandler
 } from 'react-native';
 import IconAntDesign from 'react-native-vector-icons/MaterialIcons';
 import { Appbar, Card } from 'react-native-paper';
@@ -39,6 +39,8 @@ export default class EmployeeIn extends Component {
       searchLoader: false,
     };
   }
+
+  
 
   async searchVisitor(value) {
     const tokenn = JSON.parse(await AsyncStorage.getItem('token'));

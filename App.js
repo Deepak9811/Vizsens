@@ -16,13 +16,14 @@ import PopUp from './components/PopUp';
 import Nav from './components/Nav';
 import VisitorWithoutMobile from './components/VisitorWithoutMobile';
 import Staff from './components/Staff';
-import StaffIN from './components/StaffIn';
+import StaffIN from './components/StaffEdit';
 import StaffOut from './components/StaffOut';
 import Courier from './components/Courier';
 import ListInside from './components/ListInside';
 import EmployeeIn from './components/EmployeeIn';
 import AddStaff from './components/AddStaff';
 import StaffDetails from './components/StaffDetails';
+import StaffEdit from './components/StaffEdit';
 
 const Stack = createNativeStackNavigator();
 
@@ -67,7 +68,7 @@ export default class App extends Component {
             <Stack.Screen name="Staff" component={Staff} />
           <Stack.Screen name="AddStaff" component={AddStaff} />
             <Stack.Screen name="StaffDetails" component={StaffDetails} />
-            <Stack.Screen name="StaffOUT" component={StaffOut} />
+            <Stack.Screen name="StaffEdit" component={StaffEdit} />
 
             <Stack.Screen name="PrintVisitor" component={PrintVisitor} />
             <Stack.Screen name="ReadQr" component={ReadQr} />

@@ -9,7 +9,7 @@ import {
     StatusBar,
     ActivityIndicator,
     Alert,
-    ToastAndroid,
+    ToastAndroid,BackHandler
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -34,6 +34,10 @@ export default class StaffDetails extends Component {
         };
     }
 
+   
+    
+      
+
 
 
     async componentDidMount() {
@@ -57,12 +61,13 @@ export default class StaffDetails extends Component {
         )
             .then(result => {
                 result.json().then(resp => {
-                    console.log('userAddress : ', resp);
+                    console.log('userAddress : ', resp.data[0]);
 
                     if (resp.response === 'success') {
                         this.setState({
                             employeeId: resp.data[0].employeeId,
-                            name: resp.data[0].name,
+                            fname: resp.data[0].fname,
+                            lname: resp.data[0].lname,
                             vendor: resp.data[0].vendor,
                             mobile: resp.data[0].mobile,
                             joinedon: resp.data[0].joinedon,
@@ -101,7 +106,7 @@ export default class StaffDetails extends Component {
                 this.setState({
                     loader: false,
                 });
-                Alert.alert('Error', error.message, [{ text: 'Okay' }],{cancelable:true});
+                Alert.alert('Error', error.message, [{ text: 'Okay' }], { cancelable: true });
             });
 
 
@@ -130,16 +135,24 @@ export default class StaffDetails extends Component {
                     console.log(resp)
                     if (resp.response === 'success') {
                         if (resp.message === "Can't check in. Last check out is missing") {
-                            console.log("Can't check in")
+                            const sl = resp.message
+                            console.log(sl)
+                            ToastAndroid.show(
+                                resp.message,
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                            );
                         } else {
-                            this.props.navigation.push('Home')
-                            console.log("check in")
+                            const sl = resp.message
+                            console.log(sl)
+                            this.props.navigation.navigate('Home')
+                            ToastAndroid.show(
+                                resp.message,
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                            );
                         }
-                        ToastAndroid.show(
-                            resp.message,
-                            ToastAndroid.LONG,
-                            ToastAndroid.BOTTOM,
-                        );
+                        
                         this.setState({
                             loader: false,
                         });
@@ -164,7 +177,7 @@ export default class StaffDetails extends Component {
         } else {
             Alert.alert('Wrong Input', 'Please fill all the fields.', [
                 { text: 'Okay' },
-            ],{cancelable:true});
+            ], { cancelable: true });
         }
     }
 
@@ -194,15 +207,24 @@ export default class StaffDetails extends Component {
                     if (resp.response === 'success') {
                         if (resp.message === "Can't check out. Last check in is missing") {
                             console.log("Can't check in")
+                            const sl = resp.message
+                            console.log(sl)
+                            ToastAndroid.show(
+                                resp.message,
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                            );
                         } else {
-                            this.props.navigation.push('Home')
-                            console.log("check in")
+                            const sl = resp.message
+                            console.log(sl)
+                            this.props.navigation.navigate('Home')
+                            ToastAndroid.show(
+                                resp.message,
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                            );
                         }
-                        ToastAndroid.show(
-                            resp.message,
-                            ToastAndroid.LONG,
-                            ToastAndroid.BOTTOM,
-                        );
+                       
                         this.setState({
                             loader: false,
                         });
@@ -227,7 +249,7 @@ export default class StaffDetails extends Component {
         } else {
             Alert.alert('Wrong Input', 'Please fill all the fields.', [
                 { text: 'Okay' },
-            ],{cancelable:true});
+            ], { cancelable: true });
         }
     }
 
@@ -238,10 +260,18 @@ export default class StaffDetails extends Component {
                 <Appbar.Header style={styles.ttl}>
                     <TouchableOpacity
                         style={{ paddingLeft: '2%' }}
-                        onPress={() => this.props.navigation.goBack()}>
+                        onPress={() => this.props.navigation.navigate('Staff')}>
                         <AntDesign name="arrowleft" color="#05375a" size={25} />
                     </TouchableOpacity>
                     <Appbar.Content title="Staff Details" />
+                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("StaffEdit")}>
+                    <MaterialCommunityIcons
+                        name="account-edit-outline"
+                        color="#05375a"
+                        size={35}
+                        style={{ marginRight: 25, marginLeft: 10 }}
+                    />
+                    </TouchableOpacity>
                 </Appbar.Header>
 
                 {!this.state.loader ? (
@@ -258,12 +288,12 @@ export default class StaffDetails extends Component {
 
                                         {/* ==============IMAGE==================== */}
                                         <View style={{ alignItems: "center", marginBottom: "5%" }}>
-                                            <TouchableOpacity style={styles.img} onPress={() => this.cameraCapture()}>
+                                            <View style={styles.img} >
 
                                                 {!this.state.showPhoto ? (
                                                     <View style={{
-                                                        justifyContent: "center", alignItems: "center", height: 250,
-                                                        width: 320
+                                                        justifyContent: "center", alignItems: "center", height: 350,
+                                                        width: 530
                                                     }}>
                                                         <Feather name="user" size={220} color="#fe8c00" />
                                                     </View>
@@ -271,8 +301,8 @@ export default class StaffDetails extends Component {
                                                     <>
                                                         <Image
                                                             style={{
-                                                                height: 250,
-                                                                width: 320,
+                                                                height: 350,
+                                                                width: 530,
                                                                 borderRadius: 5,
                                                             }}
                                                             source={{
@@ -283,7 +313,7 @@ export default class StaffDetails extends Component {
                                                 )}
 
 
-                                            </TouchableOpacity>
+                                            </View>
                                         </View>
 
                                         {/* ================Staff-Name====================== */}
@@ -292,7 +322,7 @@ export default class StaffDetails extends Component {
                                             colors={['#fff', '#fff']}
                                             style={styles.commonGradient}>
                                             <View style={{ marginBottom: '4%' }}>
-                                                <Text style={styles.text_footer}>Staff Name :</Text>
+                                                <Text style={styles.text_footer}>First Name :</Text>
 
                                                 <View style={styles.editInfo}>
                                                     <View style={styles.iconC}>
@@ -300,7 +330,53 @@ export default class StaffDetails extends Component {
                                                     </View>
                                                     <View>
                                                         <Text style={styles.fillDetails}>
-                                                            {this.state.name}
+                                                            {this.state.fname}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </LinearGradient>
+
+                                        {/* ================last-Name====================== */}
+
+                                        <LinearGradient
+                                            colors={['#fff', '#fff']}
+                                            style={styles.commonGradient}>
+                                            <View style={{ marginBottom: '4%' }}>
+                                                <Text style={styles.text_footer}>Last Name :</Text>
+
+                                                <View style={styles.editInfo}>
+                                                    <View style={styles.iconC}>
+                                                        <Feather name="user" color="#05375a" size={20} />
+                                                    </View>
+                                                    <View>
+                                                        <Text style={styles.fillDetails}>
+                                                            {this.state.lname}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </LinearGradient>
+
+                                        {/* ================mobile====================== */}
+                                        <LinearGradient
+                                            colors={['#fff', '#fff']}
+                                            style={styles.commonGradient}>
+                                            <View style={{ marginBottom: '4%' }}>
+                                                <Text style={styles.text_footer}>mobile :</Text>
+
+                                                <View style={styles.editInfo}>
+                                                    <View style={styles.iconC}>
+                                                        <FontAwesome5
+                                                            name="mobile-alt"
+                                                            color="#05375a"
+                                                            size={20}
+                                                        />
+                                                    </View>
+                                                    <View>
+                                                        <Text
+                                                            style={[styles.fillDetails, { color: '#05375a' }]}>
+                                                            {this.state.mobile}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -335,30 +411,7 @@ export default class StaffDetails extends Component {
                                         </LinearGradient>
 
 
-                                        {/* ================mobile====================== */}
-                                        <LinearGradient
-                                            colors={['#fff', '#fff']}
-                                            style={styles.commonGradient}>
-                                            <View style={{ marginBottom: '4%' }}>
-                                                <Text style={styles.text_footer}>mobile :</Text>
-
-                                                <View style={styles.editInfo}>
-                                                    <View style={styles.iconC}>
-                                                        <FontAwesome5
-                                                            name="mobile-alt"
-                                                            color="#05375a"
-                                                            size={20}
-                                                        />
-                                                    </View>
-                                                    <View>
-                                                        <Text
-                                                            style={[styles.fillDetails, { color: '#05375a' }]}>
-                                                            {this.state.mobile}
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </LinearGradient>
+                                        
 
 
                                     </View>

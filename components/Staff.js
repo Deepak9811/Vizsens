@@ -9,7 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Image,
-  ToastAndroid,
+  ToastAndroid,BackHandler
 } from 'react-native';
 import { Appbar, Card } from 'react-native-paper';
 
@@ -45,6 +45,8 @@ export default class Staff extends Component {
       hideFirstPicker:true
     };
   }
+
+  
 
   async componentDidMount() {
 
@@ -205,6 +207,19 @@ export default class Staff extends Component {
     );
   }
 
+  // componentWillUnmount() {
+  //   BackHandler.removeEventListener(
+  //     'hardwareBackPress',
+
+  //     this.disableBackButton(),
+  //   );
+  // }
+
+  // disableBackButton() {
+  //   this.props.navigation.navigate("Home");
+
+  //   return true;
+  // }
 
   render() {
     return (
@@ -212,7 +227,7 @@ export default class Staff extends Component {
         <Appbar.Header style={styles.ttl}>
           <TouchableOpacity
             style={{ paddingLeft: '2%' }}
-            onPress={() => this.props.navigation.goBack()}>
+            onPress={() => this.props.navigation.navigate('Home')}            >
             <AntDesign name="arrowleft" color="#05375a" size={25} />
           </TouchableOpacity>
 
@@ -242,13 +257,13 @@ export default class Staff extends Component {
           <View style={styles.mgt}>
             <View style={styles.cdm}>
               <View style={{ flexDirection: "row", marginBottom: '3%' }}>
-                <View style={{}}>
+                <View style={{width:"94%"}}>
                   <Text style={{ color: '#959595' }}>
                     Select the option below to proceed further...
                   </Text>
                 </View>
-                <TouchableOpacity onPress={() => this.props.navigation.push("AddStaff")} disabled={this.state.disabled}>
-                  <Text><Feather name="user-plus" size={25} /></Text>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("AddStaff")} disabled={this.state.disabled}>
+                  <Text><Feather name="user-plus" size={30} /></Text>
                 </TouchableOpacity>
               </View>
 
@@ -309,7 +324,7 @@ export default class Staff extends Component {
                                   style={styles.searchTextSyle}
                                   onPress={() => this.getTextValue(item)}>
                                   <Text style={[styles.searchText]}>
-                                    {item.name}
+                                    {item.fname+" "+ item.lname}
                                   </Text>
                                 </TouchableOpacity>
                               </View>
@@ -340,14 +355,14 @@ export default class Staff extends Component {
             bottom: 0,
             left: 0,
             right: 0,
-            marginBottom: '3%',
+            marginBottom: '1%',
             marginLeft: '5%',
             alignItems: 'center',
           }}>
           <View style={styles.link}>
             <Image
               source={require('./image/partner.png')}
-              style={{ width: 200, height: 30 }}
+              style={{ width: 200, height: 35 }}
             />
           </View>
         </View>
@@ -368,7 +383,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   flatstyles: {
-    maxHeight: 270,
+    maxHeight: 500,
     width: '100%',
     // position: 'absolute',
     // elevation: 1,
@@ -392,15 +407,6 @@ const styles = StyleSheet.create({
 
     margin: 0,
     backgroundColor: '#fff',
-  },
-  searchInputStyle: {
-    flex: 1,
-    width: '100%',
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    margin: 0,
-    color: 'black',
   },
   pkr: {
     width: '100%',
@@ -443,53 +449,12 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginBottom: '5%',
   },
-  mgaw: {
-    width: '100%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
+  
   mgt: {
     marginTop: '5%',
     marginBottom: '5%',
   },
-  inp: {
-    marginBottom: '5%',
-  },
-  mText: {
-    backgroundColor: '#fff',
-    padding: 5,
-    height: 40,
-    width: 300,
-    borderColor: '#333',
-    borderStyle: 'solid',
-    borderWidth: 1,
-  },
-
-  textFocus: {
-    backgroundColor: '#eee',
-    borderColor: '#5d05d5',
-  },
-  image: {
-    width: '100%',
-    height: 250,
-    resizeMode: 'contain',
-    margin: 5,
-  },
-  signIn: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  textSign: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  button: {
-    alignItems: 'center',
-    marginTop: 30,
-  },
+  
   lod: {
     flex: 1,
     width: '100%',
